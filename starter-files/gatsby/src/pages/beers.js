@@ -1,9 +1,70 @@
+import { graphql } from "gatsby";
 import React from "react";
+import styled from "styled-components";
 
-export default function BeersPage() {
+const BeerGridStyles = styled.div`
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+`;
+
+const SingleBeersStyles = styled.div`
+  border: 1px solid var(--grey);
+  padding: 2rem;
+  text-align: center;
+  img {
+    width: 100%;
+    height: 200px;
+    object-fit: contain;
+    display: grid;
+    align-content: center;
+    font-size: 10px;
+  }
+`;
+
+export default function BeersPage({ data }) {
+  console.log(data);
   return (
     <>
-      <p>Hey I'm the Beers page!</p>
+      <h2 className="center">
+        We have {data.beers.nodes.length} Beers Available. Dine in Only!
+      </h2>
+      <BeerGridStyles>
+        {data.beers.nodes.map((beer) => {
+          const rating = beer.rating ? Math.round(beer.rating.average) : "";
+          return (
+            <SingleBeersStyles key={beer.id}>
+              <img src={beer.image} alt={beer.name} />
+              <h3>{beer.name}</h3>
+              {beer.price}
+              <p title={`${rating} out of 5 stars`}>
+                {`⭐`.repeat(rating)}
+                <span style={{ filter: `grayscale(100%)` }}>
+                  {`⭐`.repeat(5 - rating)}
+                </span>
+                <span>{beer.rating ? beer.rating.reviews : ""}</span>
+              </p>
+            </SingleBeersStyles>
+          );
+        })}
+      </BeerGridStyles>
     </>
   );
 }
+
+export const query = graphql`
+  query {
+    beers: allBeer {
+      nodes {
+        id
+        name
+        price
+        image
+        rating {
+          average
+          reviews
+        }
+      }
+    }
+  }
+`;

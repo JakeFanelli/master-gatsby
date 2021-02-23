@@ -20,9 +20,9 @@ const ToppingsStyles = styled.div`
       background: white;
       padding: 2px 5px;
     }
-  }
-  .active {
-    background: var(--yellow);
+    &[aria-current="page"] {
+      background: var(--yellow);
+    }
   }
 `;
 
@@ -49,7 +49,7 @@ function countPizzasInToppings(pizzas) {
   return sortedToppings;
 }
 
-export default function ToppingsFilter() {
+export default function ToppingsFilter({ activeTopping }) {
   const { toppings, pizzas } = useStaticQuery(graphql`
     query {
       toppings: allSanityTopping {
@@ -70,9 +70,12 @@ export default function ToppingsFilter() {
     }
   `);
   const toppingsWithCount = countPizzasInToppings(pizzas.nodes);
-
   return (
     <ToppingsStyles>
+      <Link to="/pizzas">
+        <span>All</span>
+        <span className="count">{pizzas.nodes.length}</span>
+      </Link>
       {toppingsWithCount.map((topping) => (
         <Link to={`/topping/${topping.name}`} key={topping.id}>
           <span className="name">{topping.name}</span>
