@@ -20,8 +20,8 @@ export default {
       },
     },
     {
-      name: "desciption",
-      title: "Desciption",
+      name: "description",
+      title: "Description",
       type: "text",
       description: "tell us a little about this person",
     },
